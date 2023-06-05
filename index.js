@@ -21,15 +21,19 @@ async function run(movieID) {
     });
 
     const data = await page.evaluate(() => {
-        const advisoryViolence = document.querySelector("#advisory-violence .ipl-zebra-list").innerText.replace("\n", "");
-        const advisoryNudity = document.querySelector("#advisory-nudity .ipl-zebra-list").innerText.replace("\n", "");
-        const advisoryProfanity = document.querySelector("#advisory-profanity .ipl-zebra-list").innerText.replace("\n", "");
-        const advisoryAlcohol = document.querySelector("#advisory-alcohol .ipl-zebra-list").innerText.replace("\n", "");
-        const advisoryFrightening = document.querySelector("#advisory-frightening .ipl-zebra-list").innerText.replace("\n", "");
+        //This is to create a nodelist without the severity vote list item, document.querySelectorAll("#advisory-violence .ipl-zebra-list__item:not(.advisory-severity-vote__container)")
+        //Array.prototype.map.call() takes two arguments, one is nodelist, other one is the mapping function
+        const advisoryViolence = Array.prototype.map.call(document.querySelectorAll("#advisory-violence .ipl-zebra-list__item:not(.advisory-severity-vote__container)"), item => item.innerText);
+        const advisoryNudity = Array.prototype.map.call(document.querySelectorAll("#advisory-nudity .ipl-zebra-list__item:not(.advisory-severity-vote__container)"), item => item.innerText);
+        const advisoryProfanity = Array.prototype.map.call(document.querySelectorAll("#advisory-profanity .ipl-zebra-list__item:not(.advisory-severity-vote__container)"), item => item.innerText);
+        const advisoryAlcohol = Array.prototype.map.call(document.querySelectorAll("#advisory-alcohol .ipl-zebra-list__item:not(.advisory-severity-vote__container)"), item => item.innerText);
+        const advisoryFrightening = Array.prototype.map.call(document.querySelectorAll("#advisory-frightening .ipl-zebra-list__item:not(.advisory-severity-vote__container)"), item => item.innerText);
        return { advisoryViolence, advisoryNudity, advisoryProfanity, advisoryAlcohol, advisoryFrightening };
     });
     
-    console.log(data.advisoryViolence);
+    data.advisoryViolence.forEach(element => {
+        console.log("-> "+element + "\n");
+    });
 
     await browser.close();
 
